@@ -2,6 +2,7 @@ package com.example.market.service;
 
 import com.example.market.ItemRepository;
 import com.example.market.dto.ItemDto;
+import com.example.market.dto.PasswordDto;
 import com.example.market.entity.ItemEntity;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.apache.bcel.classfile.Module;
@@ -67,5 +68,19 @@ public class ItemService {
         entity.setStatus("판매중");
 
         return ItemDto.fromEntity(repository.save(entity));
+    }
+
+    public void deleteItem(Long id, PasswordDto passwordDto) {
+        ItemEntity entity = repository.findById(id).orElseThrow(()-> new
+                ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        if (!passwordDto.getPassword().equals(entity.getPassword())) {
+            System.out.println("비밀번호 불일치");
+            System.out.println("passwordDto패스워드 = " + passwordDto.getPassword());
+            System.out.println("entity.getPassword() = " + entity.getPassword());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        // 비밀번호가 일치하는 경우
+        repository.deleteById(id);
     }
 }

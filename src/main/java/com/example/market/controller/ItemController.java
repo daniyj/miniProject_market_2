@@ -1,6 +1,7 @@
 package com.example.market.controller;
 
 import com.example.market.dto.ItemDto;
+import com.example.market.dto.PasswordDto;
 import com.example.market.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -41,13 +42,13 @@ public class ItemController {
                           @RequestBody ItemDto dto) {
         return service.updateItem(id,dto);
     }
-//    // DELETE /items/{id}
-//    // 해당하는 id를 가진 item를 삭제하는 메소드이다.
-//    @DeleteMapping("items/{id}")
-//    public void delete(@PathVariable("id")Long id,
-//                       @RequestBody ItemDto dto) {
-//        service.deleteItem(id,dto);
-//    }
+    // DELETE /items/{id}
+    // 해당하는 id를 가진 item를 삭제하는 메소드이다.
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id")Long id,
+                       @RequestBody PasswordDto passwordDto) {
+        service.deleteItem(id,passwordDto);
+    }
 
 
 }
