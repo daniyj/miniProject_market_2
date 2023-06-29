@@ -55,11 +55,11 @@ public class ItemService {
         }
         return itemList; //dto리스트 반환
     }
-    public Page<ItemDto> readItemPaged(){
+    public Page<ItemDto> readItemPaged(Integer pageNumber,Integer pageSize){
         // 조회하고 싶은 데이터의 정보를 담는 객체
         // 5개씩 데이터를 나눌 때 0번페이지를 달라고 요청하는 Pageable
         Pageable pageable = PageRequest.of(
-                0, 5, Sort.by("id").descending());
+                pageNumber, pageSize, Sort.by("id").descending());
 
         Page<ItemEntity> itemEntityPage = repository.findAll(pageable);
         // map: 전달받은 함수를 각 원소에 인자로 전달된 결과를

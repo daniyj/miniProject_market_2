@@ -32,25 +32,30 @@ public class ItemController {
         return ResponseEntity.ok(responseBody);
     }
     // GET /items
-    // 모든 items들을 리스트의 형태로 전부 가져온다.
+    // 전체조회 - 모든 items들을 리스트의 형태로 전부 가져온다.
     @GetMapping
     public List<ItemDto> readAll(){
         return service.readItemAll();
     }
     //  GET /items/{id}
-    // 해당하는 id를 가진 Item의 내용을 가져온다.
+    // 단일조회 - 해당하는 id를 가진 Item의 내용을 가져온다.
     @GetMapping("/{id}")
     public ItemDto read(@PathVariable("id")Long id){
         return service.readItem(id);
     }
+
+    // 페이지조회 - page?page=페이지인덱스&limit=데이터수
+    // http://localhost:8080/items/page?page=0&limit=5
+    @GetMapping("/page")
+    public Page<ItemDto> readPage(
+            @RequestParam(value = "page",defaultValue = "0")Integer page,
+            @RequestParam(value="limit",defaultValue = "5")Integer limit){
+        return service.readItemPaged(page,limit);
+    }
+
     // 수정,이미지 첨부, 삭제는 비밀번호 받아서 검사해야함.
     // PUT /items/{id}
 //     해당하는 id를 가진 item을 수정한다.
-    @GetMapping("/page-test")
-    public Page<ItemDto> readPageTest(){
-        return service.readItemPaged();
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<Map<String,String>> update(@PathVariable("id")Long id,
                           @RequestBody ItemDto dto) {
