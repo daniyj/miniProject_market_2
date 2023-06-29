@@ -7,6 +7,10 @@ import com.example.market.entity.ItemEntity;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.apache.bcel.classfile.Module;
 import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -51,6 +55,21 @@ public class ItemService {
         }
         return itemList; //dto리스트 반환
     }
+    public Page<ItemDto> readItemPaged(){
+        // 조회하고 싶은 데이터의 정보를 담는 객체
+        // 5개씩 데이터를 나눌 때 0번페이지를 달라고 요청하는 Pageable
+        Pageable pageable = PageRequest.of(
+                0, 5, Sort.by("id").descending());
+
+        Page<ItemEntity> itemEntityPage = repository.findAll(pageable);
+        // map: 전달받은 함수를 각 원소에 인자로 전달된 결과를
+        // 다시 모아서 stream 객체로
+        Page<ItemDto> itemDtoPage = itemEntityPage.map(ItemDto::fromEntity);
+
+        return itemDtoPage;
+    }
+
+
     public ItemDto updateItem(Long id, ItemDto dto){
         ItemEntity entity = repository.findById(id).orElseThrow(()-> new
         ResponseStatusException(HttpStatus.NOT_FOUND));
