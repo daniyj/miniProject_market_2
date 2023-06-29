@@ -5,7 +5,9 @@ import com.example.market.dto.ItemDto;
 import com.example.market.entity.ItemEntity;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.apache.bcel.classfile.Module;
+import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -47,5 +49,23 @@ public class ItemService {
             itemList.add(ItemDto.fromEntity(entity));
         }
         return itemList; //dto리스트 반환
+    }
+    public ItemDto updateItem(Long id, ItemDto dto){
+        ItemEntity entity = repository.findById(id).orElseThrow(()-> new
+        ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        if (!dto.getPassword().equals(entity.getPassword())) {
+            System.out.println("비밀번호 불일치");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        // 비밀번호가 일치하는 경우
+        entity.setTitle(dto.getTitle());
+        entity.setDescription(dto.getDescription());
+        entity.setMinPriceWanted(dto.getMinPriceWanted());
+        entity.setWriter(dto.getWriter());
+        entity.setPassword(dto.getPassword());
+        entity.setStatus("판매중");
+
+        return ItemDto.fromEntity(repository.save(entity));
     }
 }

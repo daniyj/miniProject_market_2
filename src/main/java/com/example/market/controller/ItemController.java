@@ -35,12 +35,12 @@ public class ItemController {
     }
     // 수정,이미지 첨부, 삭제는 비밀번호 받아서 검사해야함.
     // PUT /items/{id}
-    // 해당하는 id를 가진 item을 수정한다.
-//    @PutMapping("/items/{id}")
-//    public ItemDto update(@PathVariable("id")Long id,
-//                          @RequestBody ItemDto dto) {
-//        return service.updateItem(id,dto);
-//    }
+//     해당하는 id를 가진 item을 수정한다.
+    @PutMapping("/{id}")
+    public ItemDto update(@PathVariable("id")Long id,
+                          @RequestBody ItemDto dto) {
+        return service.updateItem(id,dto);
+    }
 //    // DELETE /items/{id}
 //    // 해당하는 id를 가진 item를 삭제하는 메소드이다.
 //    @DeleteMapping("items/{id}")
