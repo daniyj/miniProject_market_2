@@ -1,6 +1,7 @@
 package com.example.market.service;
 
 import com.example.market.ItemRepository;
+import com.example.market.dto.ImageDto;
 import com.example.market.dto.ItemDto;
 import com.example.market.dto.PasswordDto;
 import com.example.market.entity.ItemEntity;
@@ -17,6 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.swing.text.html.Option;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -90,8 +94,8 @@ public class ItemService {
     }
 
     public void deleteItem(Long id, PasswordDto passwordDto) {
-        ItemEntity entity = repository.findById(id).orElseThrow(()-> new
-                ResponseStatusException(HttpStatus.NOT_FOUND));
+        ItemEntity entity = repository.findById(id).orElseThrow(()->
+                new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         if (!passwordDto.getPassword().equals(entity.getPassword())) {
             System.out.println("비밀번호 불일치");
@@ -101,5 +105,43 @@ public class ItemService {
         }
         // 비밀번호가 일치하는 경우
         repository.deleteById(id);
+    }
+
+    // 이미지 업로드 - 진행중(미완성)
+    public void updateItemImage(Long id, ImageDto dto) {
+        // 1. 유저 존재 확인
+        Optional<ItemEntity> optionalItem = repository.findById(id);
+        if(optionalItem.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        // 2-1. 폴더 만들기
+        String profileDir = String.format("image/%d/",id);
+        try {
+            Files.createDirectories(Path.of(profileDir));
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        // 2-2 확장자를 포함한 이미지 이름 만들기(profile.확장자)
+        String originalFilename = dto.getMultipartFile().getOriginalFilename();
+        // 점을 기준으로 이름과 확장자 분리 이름.확장자 => {"이름","확장자"}
+        String[] fileNameSplit = originalFilename.split("\\.");
+        String extension = fileNameSplit[fileNameSplit.length - 1];
+        String profileFilename = "profile."+extension;
+
+        // 2-3. 폴더와 파일 경로를 포함한 이름만들기
+        String profilePath = profileDir + profileFilename;
+
+        // 3. MultipartFile을 저장
+        try {
+            dto.getMultipartFile().transferTo(Path.of(profilePath));
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // 4. ItemEntity 업데이트  (정적 프로필 이미지를 회수할 수 있는 URL)
+        // http://localhost:8080/static/1/profile.png
+        ItemEntity entity = optionalItem.get();
+        entity.setImageUrl(String.format("/static/%d/%s",id,profileFilename));
+//        return ItemDto.fromEntity(repository.save(entity));
     }
 }
