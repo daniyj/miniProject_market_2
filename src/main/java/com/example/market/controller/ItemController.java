@@ -28,7 +28,7 @@ public class ItemController {
     private final ItemService service;
 
     // POST /items
-    // 작성된 dto의 형태로 새로운 Article을 db에 저장
+    // 아이템 등록 - 작성된 dto의 형태로 새로운 Article을 db에 저장
     @PostMapping
     public ResponseEntity<Map<String,String>> create(@RequestBody ItemDto dto) {
         service.createItem(dto);
@@ -46,9 +46,9 @@ public class ItemController {
     }
     //  GET /items/{id}
     // 단일조회 - 해당하는 id를 가진 Item의 내용을 가져온다.
-    @GetMapping("/{id}")
-    public ItemDto read(@PathVariable("id")Long id){
-        return service.readItem(id);
+    @GetMapping("/{itemId}")
+    public ItemDto read(@PathVariable("itemId")Long itemId){
+        return service.readItem(itemId);
     }
 
     // GET /items/page
@@ -64,10 +64,10 @@ public class ItemController {
     // 수정,이미지 첨부, 삭제는 비밀번호 받아서 검사해야함.
     // PUT /items/{id}
 //     해당하는 id를 가진 item을 수정한다.
-    @PutMapping("/{id}")
-    public ResponseEntity<Map<String,String>> update(@PathVariable("id")Long id,
+    @PutMapping("/{itemId}")
+    public ResponseEntity<Map<String,String>> update(@PathVariable("itemId")Long itemId,
                           @RequestBody ItemDto dto) {
-        service.updateItem(id,dto);
+        service.updateItem(itemId,dto);
 
         // 응답 메시지
         Map<String,String> responseBody = new HashMap<>();
@@ -78,10 +78,10 @@ public class ItemController {
 
     // DELETE /items/{id}
     // 해당하는 id를 가진 item를 삭제하는 메소드이다.
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String,String>> delete(@PathVariable("id")Long id,
+    @DeleteMapping("/{itemId}")
+    public ResponseEntity<Map<String,String>> delete(@PathVariable("itemId")Long itemId,
                        @RequestBody PasswordDto passwordDto) {
-        service.deleteItem(id,passwordDto);
+        service.deleteItem(itemId,passwordDto);
 
         // 응답 메시지
         Map<String,String> responseBody = new HashMap<>();
@@ -90,8 +90,8 @@ public class ItemController {
     }
     // 진행중
     // PUT /items/{id}/image
-    @PutMapping(value = "/{id}/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Map<String,String>>  uploadImage(@PathVariable("id")Long id,
+    @PutMapping(value = "/{itemId}/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String,String>>  uploadImage(@PathVariable("itemId")Long itemId,
                                                            @RequestBody ImageDto imageDto
 
     )throws IOException {
@@ -105,7 +105,7 @@ public class ItemController {
 //        MultipartFile multipartFile = imageDto.getMultipartFile();
 //        multipartFile.transferTo(uploadTo);
 
-        service.updateItemImage(id,imageDto);
+        service.updateItemImage(itemId,imageDto);
         // 응답 메시지
         Map<String,String> responseBody = new HashMap<>();
         responseBody.put("message", "이미지가 등록되었습니다.");
