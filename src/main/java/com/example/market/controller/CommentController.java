@@ -1,9 +1,6 @@
 package com.example.market.controller;
 
-import com.example.market.dto.CommentDto;
-import com.example.market.dto.ItemDto;
-import com.example.market.dto.PasswordDto;
-import com.example.market.dto.UpdateDto;
+import com.example.market.dto.*;
 import com.example.market.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.sql.Update;
@@ -52,10 +49,27 @@ public class CommentController {
     // PUT /item/{itemId}/comments/{commentID}
     // 댓글 수정
     @PutMapping("/{commentId}")
-    public CommentDto updateComment(@PathVariable("itemId")Long itemId,
+    public ResponseEntity<Map<String,String>> updateComment(@PathVariable("itemId")Long itemId,
                                     @PathVariable("commentId")Long commentId,
                                     @RequestBody UpdateDto updateDto) {
-        return service.updateComment(itemId, commentId, updateDto);
+        service.updateComment(itemId, commentId, updateDto);
+        Map<String,String> responseBody = new HashMap<>();
+        responseBody.put("message","댓글이 수정되었습니다.");
+        return ResponseEntity.ok(responseBody);
+    }
+
+    // PUT /items/{itemdId}/comments/{commentID}/reply
+    // 댓글의 대댓글
+    @PutMapping("/{commentId}/reply")
+    public ResponseEntity<Map<String,String>> updateCommentReply(@PathVariable("itemId") Long itemId,
+                                         @PathVariable("commentId") Long commentId,
+                                         @RequestBody ReplyDto replyDto) {
+        service.updateCommentReply(itemId, commentId, replyDto);
+
+        Map<String,String> responseBody = new HashMap<>();
+        responseBody.put("message","댓글에 답변이 추가되었습니다.");
+//        return service.updateCommentReply(itemId, commentId, replyDto);
+        return ResponseEntity.ok(responseBody);
     }
 
     // DELETE /item/{itemId}/comments/{commentID}

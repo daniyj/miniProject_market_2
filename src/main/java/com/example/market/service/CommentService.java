@@ -4,6 +4,7 @@ import com.example.market.CommentRepository;
 import com.example.market.ItemRepository;
 import com.example.market.dto.CommentDto;
 import com.example.market.dto.PasswordDto;
+import com.example.market.dto.ReplyDto;
 import com.example.market.dto.UpdateDto;
 import com.example.market.entity.CommentEntity;
 import com.example.market.entity.ItemEntity;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.core.RepositoryCreationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -36,6 +38,7 @@ public class CommentService {
         newComment.setWriter(dto.getWriter());
         newComment.setPassword(dto.getPassword());
         newComment.setContent(dto.getContent());
+        newComment.setReply("");
 
         return CommentDto.fromEntity(commentRepository.save(newComment));
     }
@@ -75,6 +78,29 @@ public class CommentService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         entity.setContent(updateDto.getContent());
+        return CommentDto.fromEntity(commentRepository.save(entity));
+
+    }
+    public CommentDto updateCommentReply(Long itemId, Long commentId,
+                                         ReplyDto replyDto) {
+        ItemEntity itemEntity = itemRepository.findById(itemId).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        CommentEntity entity = commentRepository.findById(commentId).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        if(!itemId.equals(entity.getItemId()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+        // 입력정보가 일치하지 않는 경우
+        // 물품에 대한 작성자만 댓글의 답글을 달 수 있다. 따라서 물품의 작성자와 비밀번호와 일치한지를 검사한다.
+        if (!replyDto.getWriter().equals(itemEntity.getWriter())) {
+            System.out.println("작성자가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }else if (!replyDto.getPassword().equals(itemEntity.getPassword())) {
+            System.out.println("비밀번호가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        entity.setReply(replyDto.getReply());
         return CommentDto.fromEntity(commentRepository.save(entity));
 
     }

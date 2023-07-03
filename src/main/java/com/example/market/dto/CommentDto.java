@@ -16,7 +16,7 @@ public class CommentDto {
     @NotBlank
     private String password;
 
-//    private String reply;
+    private String reply;
 
     public static CommentDto fromEntity(CommentEntity entity){
         CommentDto dto = new CommentDto();
@@ -25,7 +25,7 @@ public class CommentDto {
         dto.setWriter(entity.getWriter());
         dto.setPassword(entity.getPassword());
         dto.setContent(entity.getContent());
-//        dto.setReply(entity.getReply());
+        dto.setReply(entity.getReply());
         return dto;
     }
 
