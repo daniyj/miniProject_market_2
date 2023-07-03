@@ -3,8 +3,10 @@ package com.example.market.controller;
 import com.example.market.dto.CommentDto;
 import com.example.market.dto.ItemDto;
 import com.example.market.dto.PasswordDto;
+import com.example.market.dto.UpdateDto;
 import com.example.market.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.sql.Update;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -46,6 +48,14 @@ public class CommentController {
     @GetMapping
     public Page<CommentDto> readPage(@PathVariable("itemId") Long itemId){
         return service.readCommentPaged(itemId);
+    }
+    // PUT /item/{itemId}/comments/{commentID}
+    // 댓글 수정
+    @PutMapping("/{commentId}")
+    public CommentDto updateComment(@PathVariable("itemId")Long itemId,
+                                    @PathVariable("commentId")Long commentId,
+                                    @RequestBody UpdateDto updateDto) {
+        return service.updateComment(itemId, commentId, updateDto);
     }
 
     // DELETE /item/{itemId}/comments/{commentID}
