@@ -2,6 +2,7 @@ package com.example.market.controller;
 
 import com.example.market.dto.CommentDto;
 import com.example.market.dto.ItemDto;
+import com.example.market.dto.PasswordDto;
 import com.example.market.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,7 @@ public class CommentController {
     @PostMapping
     public ResponseEntity<Map<String, String>>
     create(@PathVariable("itemId") Long itemId, @RequestBody CommentDto dto) {
-        service.create(itemId,dto);
+        service.createComment(itemId,dto);
         System.out.println("dto = " + dto);
         Map<String,String> responseBody = new HashMap<>();
         responseBody.put("message", "댓글이 등록되었습니다.");
@@ -47,4 +48,15 @@ public class CommentController {
         return service.readCommentPaged(itemId);
     }
 
+    // DELETE /item/{itemId}/comments/{commentID}
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Map<String,String>> deleteComment(@PathVariable("itemId")Long itemId,
+                              @PathVariable("commentId")Long commentId,
+                              @RequestBody PasswordDto passwordDto){
+        Map<String,String> responseBody = new HashMap<>();
+        responseBody.put("message", "댓글을 삭제했습니다.");
+
+        service.deleteComment(itemId,commentId,passwordDto);
+        return ResponseEntity.ok(responseBody);
+    }
 }

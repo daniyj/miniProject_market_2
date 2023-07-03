@@ -92,7 +92,7 @@ public class ItemService {
     public void deleteItem(Long id, PasswordDto passwordDto) {
         ItemEntity entity = repository.findById(id).orElseThrow(()->
                 new ResponseStatusException(HttpStatus.NOT_FOUND));
-
+        // writer에 대한 검사는 넣지 않았음 물품 하나당 작성자는 1번뿐이므로 비밀번호만 검사함.
         if (!passwordDto.getPassword().equals(entity.getPassword())) {
             System.out.println("비밀번호 불일치");
             System.out.println("passwordDto패스워드 = " + passwordDto.getPassword());
