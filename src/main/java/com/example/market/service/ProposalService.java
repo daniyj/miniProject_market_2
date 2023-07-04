@@ -2,10 +2,7 @@ package com.example.market.service;
 
 import com.example.market.ItemRepository;
 import com.example.market.ProposalRepository;
-import com.example.market.dto.PasswordDto;
-import com.example.market.dto.ProposalDto;
-import com.example.market.dto.ReadPropDto;
-import com.example.market.dto.UpdatePropDto;
+import com.example.market.dto.*;
 import com.example.market.entity.CommentEntity;
 import com.example.market.entity.ItemEntity;
 import com.example.market.entity.ProposalEntity;
@@ -114,5 +111,33 @@ public class ProposalService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         proposalRepository.deleteById(proposalId);
+    }
+    // 제안 상태 변경(물품 작성자만 가능)
+    public ProposalDto updateProposalStatus(Long itemId, Long proposalId, UpdatePropStatusDto updatePropStatusDto) {
+
+        // id에 해당하는 엔티티가 있는지 검사(Optional), 에러처리
+        ProposalEntity proposalEntity = proposalRepository.findById(proposalId).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        System.out.println("에러1");
+        ItemEntity itemEntity = itemRepository.findById(itemId).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        System.out.println("에러2");
+        // 대상 제안이 대상 게시글의 제안이 맞는지
+        if(!itemId.equals(proposalEntity.getItemId()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+        // 물품 작성자명과 비밀번호가 일치해야함.
+        // 입력정보가 일치하지 않는 경우
+        if (!updatePropStatusDto.getWriter().equals(itemEntity.getWriter())) {
+            System.out.println("작성자가 일치하지 않습니다.");
+            System.out.println("itemEntity.getWriter() = " + itemEntity.getWriter());
+            System.out.println("updatePropStatusDto.getWriter() = " + updatePropStatusDto.getWriter());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } else if (!updatePropStatusDto.getPassword().equals(itemEntity.getPassword())) {
+            System.out.println("비밀번호가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        proposalEntity.setStatus(updatePropStatusDto.getStatus());
+        return ProposalDto.fromEntity(proposalRepository.save(proposalEntity));
     }
 }
