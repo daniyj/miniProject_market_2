@@ -118,10 +118,10 @@ public class ProposalService {
         // id에 해당하는 엔티티가 있는지 검사(Optional), 에러처리
         ProposalEntity proposalEntity = proposalRepository.findById(proposalId).orElseThrow(()
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        System.out.println("에러1");
+
         ItemEntity itemEntity = itemRepository.findById(itemId).orElseThrow(()
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        System.out.println("에러2");
+
         // 대상 제안이 대상 게시글의 제안이 맞는지
         if(!itemId.equals(proposalEntity.getItemId()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -138,6 +138,34 @@ public class ProposalService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         proposalEntity.setStatus(updatePropStatusDto.getStatus());
+        return ProposalDto.fromEntity(proposalRepository.save(proposalEntity));
+    }
+    // 제안자가 구매 확정(status=수락인 경우)
+    public ProposalDto updateProposalConfirmed(Long itemId, Long proposalId, UpdatePropStatusDto updatePropStatusDto) {
+        // id에 해당하는 엔티티가 있는지 검사(Optional), 에러처리
+        ProposalEntity proposalEntity = proposalRepository.findById(proposalId).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        ItemEntity itemEntity = itemRepository.findById(itemId).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        // 대상 제안이 대상 게시글의 제안이 맞는지
+        if(!itemId.equals(proposalEntity.getItemId()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+        // 제안자의 작성자명과 비밀번호가 일치해야함.
+        // 입력정보가 일치하지 않는 경우
+        if (!updatePropStatusDto.getWriter().equals(proposalEntity.getWriter())) {
+            System.out.println("작성자가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } else if (!updatePropStatusDto.getPassword().equals(proposalEntity.getPassword())) {
+            System.out.println("비밀번호가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        if (proposalEntity.getStatus().equals("수락")) {
+            proposalEntity.setStatus(updatePropStatusDto.getStatus()); // 수락일시만 "확정"
+        }
         return ProposalDto.fromEntity(proposalRepository.save(proposalEntity));
     }
 }

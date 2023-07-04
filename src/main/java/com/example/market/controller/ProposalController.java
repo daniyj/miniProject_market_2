@@ -48,12 +48,18 @@ public class ProposalController {
         responseBody.put("message", "제안을 삭제했습니다.");
         return ResponseEntity.ok(responseBody);
     }
-    // 제안 상태 변경
-    // 우선 status로 하고 성공한뒤 나중에 경로 뺴고 다시 test하기
+    // 물품주인이 제안 상태 변경
     @PutMapping("/{proposalId}/status")
     public ProposalDto updateProposalStatus(@PathVariable("itemId") Long itemId,
                                       @PathVariable("proposalId") Long proposalId,
                                       @RequestBody UpdatePropStatusDto updatePropStatusDto) {
         return service.updateProposalStatus(itemId, proposalId, updatePropStatusDto);
+    }
+    // 제안자가 구매 확정
+    @PutMapping("/{proposalId}/status-confirmed")
+    public ProposalDto updateProposalConfirmed(@PathVariable("itemId") Long itemId,
+                                               @PathVariable("proposalId") Long proposalId,
+                                               @RequestBody UpdatePropStatusDto updatePropStatusDto) {
+        return service.updateProposalConfirmed(itemId, proposalId, updatePropStatusDto);
     }
 }
