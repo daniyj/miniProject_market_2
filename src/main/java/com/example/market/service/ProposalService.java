@@ -155,6 +155,11 @@ public class ProposalService {
 
         // 제안자의 작성자명과 비밀번호가 일치해야함.
         // 입력정보가 일치하지 않는 경우
+
+//        1. 이를 위해서 제안을 등록할 때 사용한 **작성자와 비밀번호**를 첨부해야 한다.
+//        2. 이때 구매 제안의 상태는 **확정** 상태가 된다.
+//        3. 구매 제안이 확정될 경우, 대상 물품의 상태는 **판매 완료**가 된다.
+//        4. 구매 제안이 확정될 경우, 확정되지 않은 다른 구매 제안의 상태는 모두 **거절**이 된다.
         if (!updatePropStatusDto.getWriter().equals(proposalEntity.getWriter())) {
             System.out.println("작성자가 일치하지 않습니다.");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -164,8 +169,18 @@ public class ProposalService {
         }
 
         if (proposalEntity.getStatus().equals("수락")) {
-            proposalEntity.setStatus(updatePropStatusDto.getStatus()); // 수락일시만 "확정"
+            // 그 아이템에 해당하는 구매 제안들의 상태를 모두 "거절"로 바꾸기
+            for (ProposalEntity proposalEntity1 : proposalRepository.findAllByItemId(itemEntity.getId())) {
+                proposalEntity1.setStatus("거절");
+            }
+            // 수락일시만 그 제안 "확정" 으로 변경
+            proposalEntity.setStatus(updatePropStatusDto.getStatus());
+            // 물품 상태 판매 완료로 변경
+            itemEntity.setStatus("판매 완료");
+            System.out.println("itemEntity.getId() = " + itemEntity.getId());
+            System.out.println("itemEntity.getStatus() = " + itemEntity.getStatus());
         }
+        itemRepository.save(itemEntity);
         return ProposalDto.fromEntity(proposalRepository.save(proposalEntity));
     }
 }
