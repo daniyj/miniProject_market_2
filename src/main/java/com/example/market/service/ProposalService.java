@@ -4,6 +4,7 @@ import com.example.market.ItemRepository;
 import com.example.market.ProposalRepository;
 import com.example.market.dto.ProposalDto;
 import com.example.market.dto.ReadPropDto;
+import com.example.market.dto.UpdatePropDto;
 import com.example.market.entity.CommentEntity;
 import com.example.market.entity.ItemEntity;
 import com.example.market.entity.ProposalEntity;
@@ -66,7 +67,6 @@ public class ProposalService {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
         }
-
         // 우선 조회 말고 넘어가고 다른 기능 먼저 구현하기 수정이랑 삭제
 
         Pageable pageable = PageRequest.of(0, 5, Sort.by("id").descending());
@@ -74,5 +74,25 @@ public class ProposalService {
         Page<ProposalEntity> proposalEntitiyPage = proposalRepository.findAllByItemId(itemId, pageable);
         Page<ProposalDto> proposalDtoPage = proposalEntitiyPage.map(ProposalDto::fromEntity);
         return proposalDtoPage;
+    }
+
+    public ProposalDto updateProposal(Long itemId, Long proposalId, UpdatePropDto updatePropDto) {
+        // id에 해당하는 엔티티가 있는지 검사(Optional), 에러처리
+        ProposalEntity entity = proposalRepository.findById(proposalId).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        // 대상 제안이 대상 게시글의 제안이 맞는지
+        if(!itemId.equals(entity.getItemId()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        // 입력정보가 일치하지 안흔 경우
+        if (!updatePropDto.getWriter().equals(entity.getWriter())) {
+            System.out.println("작성자가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } else if (!updatePropDto.getPassword().equals(entity.getPassword())) {
+            System.out.println("비밀번호가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        entity.setSuggestedPrice(updatePropDto.getSuggestedPrice());
+        return ProposalDto.fromEntity(proposalRepository.save(entity));
     }
 }

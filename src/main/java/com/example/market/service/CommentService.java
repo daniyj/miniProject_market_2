@@ -5,16 +5,14 @@ import com.example.market.ItemRepository;
 import com.example.market.dto.CommentDto;
 import com.example.market.dto.PasswordDto;
 import com.example.market.dto.ReplyDto;
-import com.example.market.dto.UpdateDto;
+import com.example.market.dto.UpdateComDto;
 import com.example.market.entity.CommentEntity;
 import com.example.market.entity.ItemEntity;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.resource.beans.container.internal.CdiBeanContainerImmediateAccessImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.core.RepositoryCreationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -61,7 +59,7 @@ public class CommentService {
         return commentList;
     }
     public CommentDto updateComment(Long itemId, Long commentId,
-                                    UpdateDto updateDto) {
+                                    UpdateComDto updateComDto) {
         // id에 해당하는 엔티티가 있는지 검사(Optional), 에러처리
         CommentEntity entity = commentRepository.findById(commentId).orElseThrow(()
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -70,14 +68,14 @@ public class CommentService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         // 입력정보가 일치하지 않는 경우
-        if (!updateDto.getWriter().equals(entity.getWriter())) { // 작성자가 일치하지 않는 경우
+        if (!updateComDto.getWriter().equals(entity.getWriter())) { // 작성자가 일치하지 않는 경우
             System.out.println("작성자가 일치하지 않습니다.");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }else if (!updateDto.getPassword().equals(entity.getPassword())) { // 비밀번호가 일치하지 않는 경우
+        }else if (!updateComDto.getPassword().equals(entity.getPassword())) { // 비밀번호가 일치하지 않는 경우
             System.out.println("비밀번호가 일치하지 않습니다.");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        entity.setContent(updateDto.getContent());
+        entity.setContent(updateComDto.getContent());
         return CommentDto.fromEntity(commentRepository.save(entity));
 
     }

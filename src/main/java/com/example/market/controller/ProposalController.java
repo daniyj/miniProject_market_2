@@ -2,6 +2,7 @@ package com.example.market.controller;
 
 import com.example.market.dto.ProposalDto;
 import com.example.market.dto.ReadPropDto;
+import com.example.market.dto.UpdatePropDto;
 import com.example.market.service.ProposalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,5 +27,12 @@ public class ProposalController {
                                       @RequestParam String password)
     {
         return service.readPropAll(itemId,writer,password);
+    }
+
+    @PutMapping("/{proposalId}")
+    public ProposalDto updateProposal(@PathVariable("itemId") Long itemId,
+                                      @PathVariable("proposalId") Long proposalId,
+                                      @RequestBody UpdatePropDto updatePropDto) {
+        return service.updateProposal(itemId, proposalId, updatePropDto);
     }
 }

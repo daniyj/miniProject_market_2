@@ -3,8 +3,8 @@ package com.example.market.dto;
 import lombok.Data;
 
 @Data
-public class UpdateDto {
+public class UpdatePropDto {
     private String writer;
     private String password;
-    private String content;
+    private Long suggestedPrice;
 }

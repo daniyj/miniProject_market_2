@@ -3,10 +3,8 @@ package com.example.market.controller;
 import com.example.market.dto.*;
 import com.example.market.service.CommentService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.sql.Update;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -51,8 +49,8 @@ public class CommentController {
     @PutMapping("/{commentId}")
     public ResponseEntity<Map<String,String>> updateComment(@PathVariable("itemId")Long itemId,
                                     @PathVariable("commentId")Long commentId,
-                                    @RequestBody UpdateDto updateDto) {
-        service.updateComment(itemId, commentId, updateDto);
+                                    @RequestBody UpdateComDto updateComDto) {
+        service.updateComment(itemId, commentId, updateComDto);
         Map<String,String> responseBody = new HashMap<>();
         responseBody.put("message","댓글이 수정되었습니다.");
         return ResponseEntity.ok(responseBody);
