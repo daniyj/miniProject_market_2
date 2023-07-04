@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -38,40 +39,57 @@ public class ProposalService {
 
         return ProposalDto.fromEntity(proposalRepository.save(newProp));
     }
-    public Page<ProposalDto> readPropAll(Long itemId, String writer,String password){
+
+    public Page<ProposalDto> readPropAll(Long itemId) {
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("id").descending());
+
+        Page<ProposalEntity> proposalEntitiyPage = proposalRepository.findAllByItemId(itemId, pageable);
+        Page<ProposalDto> proposalDtoPage = proposalEntitiyPage.map(ProposalDto::fromEntity);
+
+        return proposalDtoPage;
+    }
+    public Page<ProposalDto> readProp(Long itemId, String writer,String password){
         // 물품 주인 또는 작성자만 조회할 수 있음
 
         //해당 물품 엔티티 조회
         ItemEntity itemEntity = itemRepository.findById(itemId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        System.out.println("itemEntity.getWriter() = " + itemEntity.getWriter());
+        System.out.println("writer = " + writer);
+        System.out.println(writer.equals(itemEntity.getWriter()));
+        // 해당 제안 엔티티 조회
+        ProposalEntity proposalEntity = proposalRepository.findByWriter(writer).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("id").descending());
 
         // 물품 주인인 경우
         if (writer.equals(itemEntity.getWriter())) {
+            System.out.println("물품 주인입니다.");
             // 맞으면 비밀번호 검사
             if(!password.equals(itemEntity.getPassword())){
                 System.out.println("비밀번호가 일치하지 않습니다.");
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
+            // 물품 주인의 경우 해당 아이템의 모든 구매 제안이 조회 가능하다.
+            Page<ProposalEntity> proposalEntitiyPage = proposalRepository.findAllByItemId(itemId, pageable);
+            Page<ProposalDto> proposalDtoPage = proposalEntitiyPage.map(ProposalDto::fromEntity);
+            return proposalDtoPage;
         }
-        // 해당 제안 엔티티 조회
-        ProposalEntity proposalEntity = proposalRepository.findByWriter(writer).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         // 작성자인지 검사
         if(writer.equals(proposalEntity.getWriter())){
             // 맞으면 비밀번호 검사
             if (!password.equals(proposalEntity.getPassword())) {
-                System.out.println("비밀번호가 일치하지 않습니다.");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"비밀번호가 일치하지 않습니다.");
             }
+            // 구매 제안자의 경우 자신이 등록한 구매 제안만 확인이 가능하다.
+            Page<ProposalEntity> proposalEntityPage = proposalRepository.findAllByWriter(proposalEntity.getWriter(),pageable);
+            Page<ProposalDto> proposalDtoPage = proposalEntityPage.map(ProposalDto::fromEntity);
+            return proposalDtoPage;
         }
-        // 우선 조회 말고 넘어가고 다른 기능 먼저 구현하기 수정이랑 삭제
-
-        Pageable pageable = PageRequest.of(0, 5, Sort.by("id").descending());
-
-        Page<ProposalEntity> proposalEntitiyPage = proposalRepository.findAllByItemId(itemId, pageable);
-        Page<ProposalDto> proposalDtoPage = proposalEntitiyPage.map(ProposalDto::fromEntity);
-        return proposalDtoPage;
+        // 물품 주인, 작성자도 아닌 경우 / 정보를 잘못 입력한 경우 에러 처리
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND,"해당 정보를 찾을 수 없습니다.");
     }
 
     public ProposalDto updateProposal(Long itemId, Long proposalId, UpdatePropDto updatePropDto) {

@@ -21,6 +21,11 @@ public class ProposalController {
                                       @RequestBody ProposalDto dto) {
         return service.createProposal(itemId,dto);
     }
+    // (조회를 위해 구현) 기능에 포함되지 않은 항목임
+    @GetMapping("/page")
+    public Page<ProposalDto> readPageAll(@PathVariable("itemId") Long itemId) {
+        return service.readPropAll(itemId);
+    }
     // 정보 조회를 위해 우선 구현.
     // 비밀번호와 작성자를 넣어야 조회가능하나 모든 정보가 조회 가능해서 추후 수정해야함.
     // 다른 기능을 하며 조회가 필요해서 가장 마지막에 수정하기로함
@@ -29,7 +34,7 @@ public class ProposalController {
                                       @RequestParam String writer,
                                       @RequestParam String password)
     {
-        return service.readPropAll(itemId,writer,password);
+        return service.readProp(itemId,writer,password);
     }
     // 제안 수정
     @PutMapping("/{proposalId}")

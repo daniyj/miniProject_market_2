@@ -14,4 +14,6 @@ public interface ProposalRepository extends JpaRepository<ProposalEntity, Long> 
 
     Optional<ProposalEntity> findByWriter(String writer);
 
+    Page<ProposalEntity> findAllByWriter(String writer, Pageable pageable);
+
 }
