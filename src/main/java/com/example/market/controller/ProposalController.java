@@ -22,8 +22,9 @@ public class ProposalController {
     // 추후 비밀번호와 작성자 넣어야 조회 가능하도록 수정해야함
     @GetMapping
     public Page<ProposalDto> readPage(@PathVariable("itemId") Long itemId,
-                                      @RequestBody ReadPropDto dto)
+                                      @RequestParam String writer,
+                                      @RequestParam String password)
     {
-        return service.readPropAll(itemId,dto);
+        return service.readPropAll(itemId,writer,password);
     }
 }
