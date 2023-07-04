@@ -1,27 +1,28 @@
 package com.example.market.dto;
 
-import com.example.market.entity.ItemEntity;
-import com.example.market.entity.NegoEntity;
+import com.example.market.entity.ProposalEntity;
 import lombok.Data;
 
 @Data
-public class NegoDto {
+public class ProposalDto {
     private Long id;
     private Long itemId;
-    private String suggestedPrice;
-    private String status;
+    private Long suggestedPrice;
     private String writer;
     private String password;
+    private String status;
 
-    public static NegoDto fromEntity(NegoEntity entity){
 
-        NegoDto dto = new NegoDto();
+    public static ProposalDto fromEntity(ProposalEntity entity){
+
+        ProposalDto dto = new ProposalDto();
         dto.setId(entity.getId());
         dto.setItemId(entity.getItemId());
         dto.setSuggestedPrice(entity.getSuggestedPrice());
-        dto.setStatus(entity.getStatus());
         dto.setWriter(entity.getWriter());
         dto.setPassword(entity.getPassword());
+        dto.setStatus(entity.getStatus());
+
         return dto;
     }
 }

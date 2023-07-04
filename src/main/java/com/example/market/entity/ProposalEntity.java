@@ -5,13 +5,13 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "Negotiation")
-public class NegoEntity {
+@Table(name = "Proposals")
+public class ProposalEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long itemId;
-    private String suggestedPrice;
+    private Long suggestedPrice;
     private String status;
     private String writer;
     private String password;

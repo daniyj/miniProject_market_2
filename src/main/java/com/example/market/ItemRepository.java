@@ -8,4 +8,7 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<ItemEntity,Long> {
     // 아이디가 큰 순서대로 최상위 10개
     List<ItemEntity> findTop5ByOrderByIdDesc();
+    String findWriterByItemId(Long itemId);
+
+    String findPasswordByItemId(Long itemId);
 }
