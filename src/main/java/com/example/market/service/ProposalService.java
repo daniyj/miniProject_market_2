@@ -2,6 +2,7 @@ package com.example.market.service;
 
 import com.example.market.ItemRepository;
 import com.example.market.ProposalRepository;
+import com.example.market.dto.PasswordDto;
 import com.example.market.dto.ProposalDto;
 import com.example.market.dto.ReadPropDto;
 import com.example.market.dto.UpdatePropDto;
@@ -94,5 +95,24 @@ public class ProposalService {
         }
         entity.setSuggestedPrice(updatePropDto.getSuggestedPrice());
         return ProposalDto.fromEntity(proposalRepository.save(entity));
+    }
+
+    public void deleteProposal(Long itemId, Long proposalId, PasswordDto passwordDto) {
+        // id에 해당하는 엔티티가 있는지 검사(Optional), 에러처리
+        ProposalEntity entity = proposalRepository.findById(proposalId).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        // 대상 제안이 대상 게시글의 제안이 맞는지
+        if(!itemId.equals(entity.getItemId()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        // 입력정보가 일치하지 안흔 경우
+        if (!passwordDto.getWriter().equals(entity.getWriter())) {
+            System.out.println("작성자가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } else if (!passwordDto.getPassword().equals(entity.getPassword())) {
+            System.out.println("비밀번호가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        proposalRepository.deleteById(proposalId);
     }
 }
