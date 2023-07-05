@@ -93,51 +93,44 @@
 </div>
 </details>
 
-<details>
-<summary>토글 접기/펼치기</summary>
-<div markdown="1">
 
-안녕
 
-</div>
-</details>
-
-### 📌API
+### 📌REST API
 <details>
 <summary>1️⃣ 중고 물품 관리</summary>
 <div markdown="1">
   
-물품 단일 조회
+**물품 단일 조회**<br>
 GET /items/{id}<br>
 controller : read()<br>
 service : readItem()
   
-물품 전체 조회
+**물품 전체 조회**<br>
 GET /items <br>
 controller : readAll()<br>
 service : readItemAll()
 
-물품 페이지 단위 조회
+**물품 페이지 단위 조회**<br>
 GET /items/page?page=0&limit=5<br>
 controller : readPage()<br>
 service : readItemPaged()
 
-물품 등록
+**물품 등록**<br>
 POST /items<br>
 controller : create()<br>
 service : createItem()
 
-물품 정보 수정
+**물품 정보 수정**<br>
 PUT /items/{id}<br>
 controller : update()<br>
 service :updateItem()
 
-물품 삭제
+**물품 삭제**<br>
 DELETE /items/{id}<br>
 controller : delete()<br>
 service :deleteItem()
 
-물품 이미지 등록(미완성)
+**물품 이미지 등록**(미완성)<br>
 PUT /items/{id}/image<br>
 controller : uploadImage()<br>
 service : updateItemImage()
@@ -149,45 +142,73 @@ service : updateItemImage()
 <summary>2️⃣ 물품 댓글 관리</summary>
 <div markdown="1">
 
-해당 물품의 댓글 전체 조회
-
-GET /items/{itemId}/comments/readAll
-
-controller : readAll()
-
+**해당 물품의 댓글 전체 조회**<br>
+GET /items/{itemId}/comments/readAll<br>
+controller : readAll()<br>
 service : readCommentAll()
 
-댓글 등록
-
-POST /items/{itemId}/comments
-
-controller : create()
-
+**댓글 등록**<br>
+POST /items/{itemId}/comments<br>
+controller : create()<br>
 service : createComment()
 
-댓글 삭제
-
-DELETE /items/{itemId}/comments/{commentId}
-
-controller : delete()
-
+**댓글 삭제**<br>
+DELETE /items/{itemId}/comments/{commentId}<br>
+controller : delete()<br>
 service : deleteComment()
 
-댓글 수정
-
-PUT /items/{itemId}/comments/{commentId}
-
-controller : update()
-
+**댓글 수정**<br>
+PUT /items/{itemId}/comments/{commentId}<br>
+controller : update()<br>
 service : updateComment()
 
-댓글의 답글 등록
-
-PUT /items/{itemId}/comments/{commentId}/reply
-
-controller : updateCommentReply()
-
+**댓글의 답글 등록**<br>
+PUT /items/{itemId}/comments/{commentId}/reply<br>
+controller : updateCommentReply()<br>
 service : updateCommentReply()
+
+</div>
+</details>
+
+<details>
+<summary>3️⃣ 구매 제안 관리</summary>
+<div markdown="1">
+
+**구매 제안 등록**<br>
+POST /items/{itemId}/proposals<br>
+controller : createProposal<br>
+service : createProposal
+
+**구매 제안 전체보기**(요구사항에 없으나 조회를 위해 추가함)<br>
+GET /items/{itemId}/proposals/page<br>
+controller : readPageAll<br>
+service : readPropAll
+
+(미완성)**구매 제안 조회** (물품 작성자와 구매 제안 당사자만 조회 가능)<br>
+GET /items/{itemId}/proposals?writer=작성자&password=비밀번호<br>
+controller : readPage<br>
+service : readProp<br>
+구매 제안 당사자의 제안들은 조회가 가능하나, 해당 물품의 주인의 정보를 입력하면 에러가 난다.
+
+**구매 제안 수정**<br>
+PUT /items/{itemId}/proposals/{proposalId}<br>
+controller : updateProposal<br>
+service : updateProposal
+
+**제안 상태 변경**(물품 주인이 함)<br>
+PUT /items/{itemId}/proposals/{proposalId}/status<br>
+controller : updateProposalStatus<br>
+service : updateProposalStatus
+
+**구매 확정**(제안자가 함)<br>
+PUT /items/{itemId}/proposals/{proposalId}/status-confirmed<br>
+controller : updateProposalConfirmed<br>
+service : updateProposalConfirmed
+
+**제안 삭제**<br>
+DELETE /items/{itemId}/proposals/{proposalId}<br>
+controller : deleteProposal<br>
+service : deleteProposal
 
 </div>
 </details>
