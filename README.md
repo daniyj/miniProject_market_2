@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 # ♻️Mutsa Market Service♻️
 
@@ -213,6 +212,4 @@ service : deleteProposal
 
 </div>
 </details>
-=======
-# Project_1_ShinYeji
->>>>>>> 349557b6cedf35ff55dab786faab4ac1a194f201
+
