@@ -105,7 +105,7 @@ public class ItemService {
         repository.deleteById(id);
     }
 
-    // 이미지 업로드 - 진행중(미완성)
+    // 이미지 업로드 - 완성
     public void updateItemImage(Long id, MultipartFile image,String password) {
         // 0. 아이템 엔티티 찾기
         ItemEntity entity = repository.findById(id).orElseThrow(()->

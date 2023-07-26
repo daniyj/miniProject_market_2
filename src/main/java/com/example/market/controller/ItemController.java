@@ -94,7 +94,6 @@ public class ItemController {
     public ResponseEntity<Map<String,String>>  uploadImage(@PathVariable("itemId")Long itemId,
                                                            @RequestParam MultipartFile image,
                                                            @RequestParam("password") String password
-
     ) {
         service.updateItemImage(itemId,image,password);
 
