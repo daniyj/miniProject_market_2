@@ -47,7 +47,7 @@ public class CommentController {
     // PUT /item/{itemId}/comments/{commentID}
     // 댓글 수정
     @PutMapping("/{commentId}")
-    public ResponseEntity<Map<String,String>> updateComment(@PathVariable("itemId")Long itemId,
+    public ResponseEntity<Map<String,String>> update(@PathVariable("itemId")Long itemId,
                                     @PathVariable("commentId")Long commentId,
                                     @RequestBody UpdateComDto updateComDto) {
         service.updateComment(itemId, commentId, updateComDto);
@@ -72,7 +72,7 @@ public class CommentController {
 
     // DELETE /item/{itemId}/comments/{commentID}
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Map<String,String>> deleteComment(@PathVariable("itemId")Long itemId,
+    public ResponseEntity<Map<String,String>> delete(@PathVariable("itemId")Long itemId,
                               @PathVariable("commentId")Long commentId,
                               @RequestBody PasswordDto passwordDto){
         Map<String,String> responseBody = new HashMap<>();

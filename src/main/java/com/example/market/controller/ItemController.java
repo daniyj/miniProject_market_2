@@ -92,20 +92,12 @@ public class ItemController {
     // PUT /items/{id}/image
     @PutMapping(value = "/{itemId}/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Map<String,String>>  uploadImage(@PathVariable("itemId")Long itemId,
-                                                           @RequestBody ImageDto imageDto
+                                                           @RequestParam MultipartFile image,
+                                                           @RequestParam("password") String password
 
-    )throws IOException {
-//        // 저장할 경로를 생성한다.
-//        Files.createDirectories(Path.of("image"));
-//
-//        // 저장할 파일 이름을 포함한 경로 작성
-//        Path uploadTo = Path.of("image/image.png");
-//
-//        // 저장한다.
-//        MultipartFile multipartFile = imageDto.getMultipartFile();
-//        multipartFile.transferTo(uploadTo);
+    ) {
+        service.updateItemImage(itemId,image,password);
 
-        service.updateItemImage(itemId,imageDto);
         // 응답 메시지
         Map<String,String> responseBody = new HashMap<>();
         responseBody.put("message", "이미지가 등록되었습니다.");

@@ -6,12 +6,14 @@ import com.example.market.dto.ItemDto;
 import com.example.market.dto.PasswordDto;
 import com.example.market.entity.ItemEntity;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
@@ -20,7 +22,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ItemService {
@@ -104,40 +106,50 @@ public class ItemService {
     }
 
     // 이미지 업로드 - 진행중(미완성)
-    public void updateItemImage(Long id, ImageDto dto) {
-        // 1. 유저 존재 확인
-        Optional<ItemEntity> optionalItem = repository.findById(id);
-        if(optionalItem.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    public void updateItemImage(Long id, MultipartFile image,String password) {
+        // 0. 아이템 엔티티 찾기
+        ItemEntity entity = repository.findById(id).orElseThrow(()->
+        new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        // 2-1. 폴더 만들기
-        String profileDir = String.format("image/%d/",id);
+        // 패스워드 일치 확인
+        if (!entity.getPassword().equals(password)) {
+            log.info("비밀번호 불일치");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        // 1. 폴더 만들기
+        String itemDirPath = String.format("image/%d/",id);
+        log.info(itemDirPath);
+
         try {
-            Files.createDirectories(Path.of(profileDir));
+            Files.createDirectories(Path.of(itemDirPath));
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        // 2-2 확장자를 포함한 이미지 이름 만들기(profile.확장자)
-        String originalFilename = dto.getMultipartFile().getOriginalFilename();
+
+        // 2. 확장자를 포함한 이미지 이름 만들기(profile.확장자)
+        String originalFilename = image.getOriginalFilename();
+        assert originalFilename != null;
         // 점을 기준으로 이름과 확장자 분리 이름.확장자 => {"이름","확장자"}
         String[] fileNameSplit = originalFilename.split("\\.");
         String extension = fileNameSplit[fileNameSplit.length - 1];
-        String profileFilename = "profile."+extension;
+        String profileFilename = "image."+extension;
 
-        // 2-3. 폴더와 파일 경로를 포함한 이름만들기
-        String profilePath = profileDir + profileFilename;
+        // 3. 폴더와 파일 경로를 포함한 이름만들기
+        String profilePath = itemDirPath + profileFilename;
+        log.info(profilePath);
 
-        // 3. MultipartFile을 저장
+        // 3. MultipartFile 을 저장
         try {
-            dto.getMultipartFile().transferTo(Path.of(profilePath));
+            image.transferTo(Path.of(profilePath));
         } catch (IOException e) {
+            log.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         // 4. ItemEntity 업데이트  (정적 프로필 이미지를 회수할 수 있는 URL)
         // http://localhost:8080/static/1/profile.png
-        ItemEntity entity = optionalItem.get();
         entity.setImageUrl(String.format("/static/%d/%s",id,profileFilename));
-//        return ItemDto.fromEntity(repository.save(entity));
+        ItemDto.fromEntity(repository.save(entity));
     }
 }

@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class ImageDto {
 
-    private MultipartFile multipartFile;
+    private MultipartFile image;
     private String writer;
     @NotBlank
     private String password;
