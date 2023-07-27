@@ -2,6 +2,7 @@ package com.example.market.service;
 
 import com.example.market.UserRepository;
 import com.example.market.entity.CustomUserDetails;
+import com.example.market.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,21 @@ public class JpaUserDetailsManager implements UserDetailsManager {
     }
 
     @Override
+    public boolean userExists(String userId) {
+        log.info("userId="+userId);
+        log.info(String.valueOf(userRepository.existsByUserId(userId)));
+        return userRepository.existsByUserId(userId);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findByUserId(userId).orElseThrow(
+                () -> new UsernameNotFoundException(userId)
+        );
+        return CustomUserDetails.fromEntity(userEntity);
+    }
+
+    @Override
     public void updateUser(UserDetails user) {
 
     }
@@ -46,17 +62,5 @@ public class JpaUserDetailsManager implements UserDetailsManager {
     @Override
     public void changePassword(String oldPassword, String newPassword) {
 
-    }
-
-    @Override
-    public boolean userExists(String userId) {
-        log.info("userId="+userId);
-        log.info(String.valueOf(userRepository.existsByUserId(userId)));
-        return userRepository.existsByUserId(userId);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.market.controller;
 
 import com.example.market.dto.JoinDto;
+import com.example.market.jwt.JwtRequestDto;
 import com.example.market.entity.CustomUserDetails;
 import com.example.market.service.JpaUserDetailsManager;
 
@@ -59,4 +60,13 @@ public class UserController {
         responseBody.put("message", ex.getReason());
         return ResponseEntity.status(ex.getStatusCode()).body(responseBody);
     }
+
+//    @PostMapping("/login")
+//    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody JwtRequestDto loginDto) {
+//        manager.loadUserByUsername();
+//        Map<String,String> responseBody = new HashMap<>();
+//        responseBody.put("message", "로그인 되었습니다.");
+//        return ResponseEntity.ok(responseBody);
+//
+//    }
 }
