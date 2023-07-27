@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import javax.validation.Valid;
 import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
