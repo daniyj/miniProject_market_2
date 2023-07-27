@@ -2,14 +2,15 @@ package com.example.market.jwt;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -34,11 +35,19 @@ public class TokenController {
         // passwordEncoder.matches(rawPassword, encodedPassword)
         // 평문 비밀번호와 암호화 비밀번호를 비교할 수 있다.
 //        log.info(userDetails.toString());
-        if (!passwordEncoder.matches(dto.getPassword(), userDetails.getPassword()))
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        if (!passwordEncoder.matches(dto.getPassword(), userDetails.getPassword())){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"비밀번호가 일치하지 않습니다.");
+        }
 
         JwtTokenDto response = new JwtTokenDto();
         response.setToken(jwtTokenUtils.generateToken(userDetails));
         return response;
+    }
+    // 에러 메시지를 보여주기 위한 메소드
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, String>> handleResponseStatusException(ResponseStatusException ex) {
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("message", ex.getReason());
+        return ResponseEntity.status(ex.getStatusCode()).body(responseBody);
     }
 }
