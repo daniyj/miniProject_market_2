@@ -15,5 +15,12 @@ public class CommentEntity {
     private String password;
     private String content;
     private String reply;
+    @ManyToOne
+    @JoinColumn(name="item_id")
+    private ItemEntity item;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
 }
