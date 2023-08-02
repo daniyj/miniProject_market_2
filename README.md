@@ -19,6 +19,7 @@
 - Database : `sqlite`
 - ORM : `JPA`
 - Dependency : `lombok` `data jpa` `web` `devtools` `validation`
+<br>
 
 ### 📌요구사항
 <details>
@@ -132,15 +133,15 @@
 <summary>  6️⃣기능 접근 요구사항</summary>
 <div markdown="1">
 1. 본래 “누구든지 열람할 수 있다”의 기능 목록은 사용자가 **인증하지 않은 상태**에서 사용할 수 있도록 한다.<br>
-    - 등록된 물품 정보는 누구든지 열람할 수 있다.
-    - 등록된 댓글은 누구든지 열람할 수 있다.
-    - 기타 기능들
+    - 등록된 물품 정보는 누구든지 열람할 수 있다.<br>
+    - 등록된 댓글은 누구든지 열람할 수 있다.<br>
+    - 기타 기능들<br><br>
     
 2. 작성자와 비밀번호를 포함하는 데이터는 **인증된 사용자만 사용**할 수 있도록 한다.<br>
     - 이때 해당하는 기능에 포함되는 아이디 비밀번호 정보는, 1일차에 새로 작성한 사용자 Entity와의 관계로 대체한다.
-        - 물품 정보 등록 → 물품 정보와 사용자 관계 설정
-        - 댓글 등록 → 댓글과 사용자 관계 설정
-        - 기타 등등
+        - 물품 정보 등록 → 물품 정보와 사용자 관계 설정<br>
+        - 댓글 등록 → 댓글과 사용자 관계 설정<br>
+        - 기타 등등<br>
     - 누구든지 중고 거래를 목적으로 물품에 대한 정보를 등록할 수 있다.
     - 등록된 물품에 대한 질문을 위하여 댓글을 등록할 수 있다.
     - 등록된 물품에 대하여 구매 제안을 등록할 수 있다.
@@ -149,6 +150,7 @@
 
 </div>
 </details>
+<br>
 
 ### 📌REST API
 <details>
@@ -287,17 +289,18 @@ POST token/issue
 
 </div>
 </details>
+<br>
 
 ### 📌별첨
 <details>
 <summary> PostCollection </summary>
 <div markdown="1">
 
-** postCollection directory **<br>
-(mini project) maket-comment.postman_collection.json<br>
-(mini project) market-item.postman_collection.json<br>
-(mini project) market-proposal.postman_collection.json<br>
-(project1).postman_collection.json
+**postCollection directory**<br>
+1. (mini project) maket-comment.postman_collection.json<br>
+2. (mini project) market-item.postman_collection.json<br>
+3. (mini project) market-proposal.postman_collection.json<br>
+4. (project1).postman_collection.json
 
 </div>
 </details>
