@@ -24,10 +24,7 @@ import java.util.Map;
 public class UserController {
     private final JpaUserDetailsManager manager;
     private final PasswordEncoder passwordEncoder;
-//    @GetMapping("/register")
-//    public void register(){
-//
-//    }
+
     @PostMapping("/register")
     public ResponseEntity<Map<String,String>> joinRequest(
             @Valid @RequestBody JoinDto joinDto){

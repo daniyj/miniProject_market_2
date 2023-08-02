@@ -88,7 +88,6 @@ public class ItemController {
         responseBody.put("message","물품이 삭제되었습니다.");
         return ResponseEntity.ok(responseBody);
     }
-    // 진행중
     // PUT /items/{id}/image
     @PutMapping(value = "/{itemId}/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Map<String,String>>  uploadImage(@PathVariable("itemId")Long itemId,

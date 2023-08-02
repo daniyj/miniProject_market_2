@@ -10,15 +10,19 @@ import java.util.List;
 @Entity
 @Table(name = "Item")
 public class ItemEntity {
-    //반드시 포함-제목,섬령,최소가격,작성자
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String title;
+    @Column(nullable = false)
     private String description;
     private String imageUrl;
+    @Column(nullable = false)
     private Long minPriceWanted;
     private String status;
+    @Column(nullable = false)
     private String writer;
     private String password;
 
