@@ -9,6 +9,7 @@ import com.example.market.dto.UpdateComDto;
 import com.example.market.entity.CommentEntity;
 import com.example.market.entity.ItemEntity;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -76,7 +77,7 @@ public class CommentService {
             System.out.println("작성자가 일치하지 않습니다.");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }else if (!updateComDto.getPassword().equals(entity.getPassword())) { // 비밀번호가 일치하지 않는 경우
-            System.out.println("비밀번호가 일치하지 않습니다.");
+            log.info("비밀번호가 일치하지 않습니다.");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         entity.setContent(updateComDto.getContent());
@@ -117,10 +118,10 @@ public class CommentService {
 
         // 입력정보가 일치하지 않는 경우
         if (!passwordDto.getWriter().equals(entity.getWriter())) { // 작성자가 일치하지 않는 경우
-            System.out.println("작성자가 일치하지 않습니다.");
+            log.info("작성자가 일치하지 않습니다.");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }else if (!passwordDto.getPassword().equals(entity.getPassword())) { // 비밀번호가 일치하지 않는 경우
-            System.out.println("비밀번호가 일치하지 않습니다.");
+            log.info("비밀번호가 일치하지 않습니다.");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
