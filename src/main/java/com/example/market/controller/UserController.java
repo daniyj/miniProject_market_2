@@ -31,7 +31,6 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<Map<String,String>> joinRequest(
             @Valid @RequestBody JoinDto joinDto){
-        log.info("컨트롤러 실행 시작");
         if (joinDto.getPassword().equals(joinDto.getPasswordCheck())) {
             log.info("password match!");
             UserDetails details = CustomUserDetails.builder()
@@ -42,9 +41,7 @@ public class UserController {
                     .address(joinDto.getAddress())
                     .build();
             log.info("detals.getUsername()="+details.getUsername());
-            log.info("details 객체 생성");
             manager.createUser(details);
-            log.info("manage에 유저 생성");
             Map<String,String> responseBody = new HashMap<>();
             responseBody.put("message", "가입 완료");
             return ResponseEntity.ok(responseBody);
@@ -52,7 +49,7 @@ public class UserController {
         log.warn("password does not match..");
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
-    // 에러처리는 manager에서 하지만 postman에서 에러 메시지 출력을 위해
+    // 에러처리는 manager에서 진행하지만 postman에서 에러 메시지 출력을 위해
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<Map<String, String>> handleResponseStatusException(ResponseStatusException ex) {
         Map<String, String> responseBody = new HashMap<>();

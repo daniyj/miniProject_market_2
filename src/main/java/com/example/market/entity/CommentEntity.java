@@ -10,13 +10,13 @@ public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long itemId;
+//    private Long itemId;
     private String writer;
     private String password;
     private String content;
     private String reply;
     @ManyToOne
-    @JoinColumn(name="item_id")
+    @JoinColumn(name="item_id") //db의 컬럼에서 사용될 이름
     private ItemEntity item;
 
     @ManyToOne

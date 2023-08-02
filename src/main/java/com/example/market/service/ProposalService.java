@@ -26,12 +26,11 @@ public class ProposalService {
     private final ItemRepository itemRepository;
 
     public ProposalDto createProposal(Long itemId, ProposalDto dto) {
-//         itemId를 ID로 가진 ItemEntity가 존재하는지?
-        if (!itemRepository.existsById(itemId))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        ItemEntity itemEntity = itemRepository.findById(itemId).orElseThrow(
+                ()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         ProposalEntity newProp = new ProposalEntity();
-        newProp.setItemId(itemId);
+        newProp.setItem(itemEntity);
         newProp.setSuggestedPrice(dto.getSuggestedPrice());
         newProp.setWriter(dto.getWriter());
         newProp.setPassword(dto.getPassword());
@@ -98,7 +97,7 @@ public class ProposalService {
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         // 대상 제안이 대상 게시글의 제안이 맞는지
-        if(!itemId.equals(entity.getItemId()))
+        if(!itemId.equals(entity.getItem().getId()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         // 입력정보가 일치하지 안흔 경우
         if (!updatePropDto.getWriter().equals(entity.getWriter())) {
@@ -118,7 +117,7 @@ public class ProposalService {
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         // 대상 제안이 대상 게시글의 제안이 맞는지
-        if(!itemId.equals(entity.getItemId()))
+        if(!itemId.equals(entity.getItem().getId()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         // 입력정보가 일치하지 안흔 경우
         if (!passwordDto.getWriter().equals(entity.getWriter())) {
@@ -141,7 +140,7 @@ public class ProposalService {
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         // 대상 제안이 대상 게시글의 제안이 맞는지
-        if(!itemId.equals(proposalEntity.getItemId()))
+        if(!itemId.equals(proposalEntity.getItem().getId()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         // 물품 작성자명과 비밀번호가 일치해야함.
@@ -168,7 +167,7 @@ public class ProposalService {
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         // 대상 제안이 대상 게시글의 제안이 맞는지
-        if(!itemId.equals(proposalEntity.getItemId()))
+        if(!itemId.equals(proposalEntity.getItem().getId()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         // 제안자의 작성자명과 비밀번호가 일치해야함.

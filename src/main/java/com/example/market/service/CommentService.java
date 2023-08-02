@@ -27,12 +27,12 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     public CommentDto createComment(Long itemId, CommentDto dto) {
-        // itemId를 ID로 가진 ItemEntity가 존재하는지?
-        if (!itemRepository.existsById(itemId))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        ItemEntity itemEntity = itemRepository.findById(itemId).orElseThrow(
+                ()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         CommentEntity newComment = new CommentEntity();
-        newComment.setItemId(itemId);
+        newComment.setItem(itemEntity);
         newComment.setWriter(dto.getWriter());
         newComment.setPassword(dto.getPassword());
         newComment.setContent(dto.getContent());
@@ -63,8 +63,12 @@ public class CommentService {
         // id에 해당하는 엔티티가 있는지 검사(Optional), 에러처리
         CommentEntity entity = commentRepository.findById(commentId).orElseThrow(()
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        ItemEntity itemEntity = itemRepository.findById(itemId).orElseThrow(
+                ()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
         // 대상 댓글이 대상 게시글의 댓글이 맞는지
-        if(!itemId.equals(entity.getItemId()))
+        if(!itemId.equals(entity.getItem().getId()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         // 입력정보가 일치하지 않는 경우
@@ -86,7 +90,7 @@ public class CommentService {
         CommentEntity entity = commentRepository.findById(commentId).orElseThrow(()
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        if(!itemId.equals(entity.getItemId()))
+        if(!itemId.equals(entity.getItem().getId()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         // 입력정보가 일치하지 않는 경우
@@ -108,7 +112,7 @@ public class CommentService {
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         // 요청한 itemId와 해당하는 댓글의 엔터티의 itemId가 같은지 검사
-        if(!itemId.equals(entity.getItemId()))
+        if(!itemId.equals(entity.getItem().getId()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         // 입력정보가 일치하지 않는 경우
